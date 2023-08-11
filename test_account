@@ -1,0 +1,46 @@
+import pytest
+from account import Account
+
+class TestAccount:
+    def setup_method(self):
+        self.a1 = Account("Jermaine")
+
+    def test_init(self):
+        account = Account("Mike")
+        assert account.get_name() == "Mike"
+        assert account.get_balance() == 0
+
+    def test_deposit(self):
+        assert self.a1.deposit(100) is True
+        assert self.a1.get_balance() == pytest.approx(100)
+
+    def test_deposit_zero_amount(self):
+        assert self.a1.deposit(0) is False
+        assert self.a1.get_balance() == pytest.approx(0)
+
+    def test_deposit_negative_amount(self):
+        assert self.a1.deposit(-25) is False
+        assert self.a1.get_balance() == pytest.approx(0)
+
+    def test_withdraw(self):
+        self.a1.deposit(300)
+        assert self.a1.withdraw(150) is True
+        assert self.a1.get_balance() == pytest.approx(150)
+
+    def test_withdraw_zero_amount(self):
+        self.a1.deposit(700)
+        assert self.a1.withdraw(0) is False
+        assert self.a1.get_balance() == pytest.approx(700)
+
+    def test_withdraw_insufficient_balance(self):
+        self.a1.deposit(60)
+        assert self.a1.withdraw(150) is False
+        assert self.a1.get_balance() == pytest.approx(60)
+
+    def test_withdraw_negative_amount(self):
+        self.a1.deposit(60)
+        assert self.a1.withdraw(-45) is False
+        assert self.a1.get_balance() == pytest.approx(60)
+
+if __name__ == "__main__":
+    pytest.main()
